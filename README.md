@@ -45,7 +45,7 @@ CampaignMonitor::LIBRARY(LIBRARY_ID);
 * lists - requires list id
 * segments - requires segment id
 * subscribers - requires list id
-* templatess - requires template id
+* templates - requires template id
 
 **_IMPORTANT:_** Please note all of the library names are plural except general.
 
