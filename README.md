@@ -2,13 +2,13 @@
 
 **This is a Laravel bundle for the Campaign Monitor API wrapper.**
 
-It uses the [official API wrapper](https://github.com/campaignmonitor/createsend-php) that can be found at which is described on the [Campaign Monitor](http://www.campaignmonitor.com/api) website like so:
+It uses the [official API wrapper](https://github.com/campaignmonitor/createsend-php), which is described on the [Campaign Monitor](http://www.campaignmonitor.com/api) website as:
 
 >	A comprehensive PHP library which implements the complete functionality of v3 of the Campaign Monitor API including graceful error handling.
 
 ## Setup
 
-1. Copy the sample config file to ``application/config/campaignmonitor``. 
+1. Copy the sample config file (``config/campaignmonitor-sample.php``) to ``application/config/campaignmonitor.php``. 
 2. Enter your [API key] into the file.
 
 Help on finding your API key and all the other API IDs mentioned below can be found on the [Getting Started section of the Campaign Monitor API site](http://www.campaignmonitor.com/api/getting-started)
@@ -49,7 +49,7 @@ CampaignMonitor::LIBRARY(LIBRARY_ID);
 
 **_IMPORTANT:_** Please note all of the library names are plural except general.
 
-All the functions in the API are covered. You can find details on them all on the [Campaign Monitor API](http://www.campaignmonitor.com/api) website or but browsing the following files:
+All the functions in the API are covered. You can find details on them all on the [Campaign Monitor API](http://www.campaignmonitor.com/api) website or by browsing the following files:
 
 ```php
 vendor/csrest_campaigns.php
@@ -72,11 +72,11 @@ $timezones = CampaignMonitor::general()->get_timezones();
 ### Get a list of all the subscriber lists for a client
 
 ```php
-CampaignMonitor::client($client_id)->get_lists();
+CampaignMonitor::clients($client_id)->get_lists();
 ```
 
 ### Get a list of active subscribers on a list from 1st March 2012
 
 ```php
-CampaignMonitor::list($list_id)->get_active_subscribers('2012-03-01');
+CampaignMonitor::lists($list_id)->get_active_subscribers('2012-03-01');
 ```
