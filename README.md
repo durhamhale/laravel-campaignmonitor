@@ -13,7 +13,7 @@ It uses the [official API wrapper](https://github.com/campaignmonitor/createsend
 
 Help on finding your API key and all the other API IDs mentioned below can be found on the [Getting Started section of the Campaign Monitor API site](http://www.campaignmonitor.com/api/getting-started)
 
-## Initiate
+## Bundle Registration
 
 Either auto-load by entering the following code in ``application/bundles.php``...
 
