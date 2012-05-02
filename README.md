@@ -39,13 +39,15 @@ CampaignMonitor::LIBRARY(LIBRARY_ID);
 
 ``LIBRARY`` should be replaced with one item from the list below depending on the interaction required. ``LIBRARY_ID`` should be replaced with the API ID for that library. See the example below for help.
 
-* campaign - requires campaign id
-* client - requires client id
+* campaigns - requires campaign id
+* clients - requires client id
 * general
-* list - requires list id
-* segment - requires segment id
-* subscriber - requires list id
-* templates - requires template id
+* lists - requires list id
+* segments - requires segment id
+* subscribers - requires list id
+* templatess - requires template id
+
+**_IMPORTANT:_** Please note all of the library names are plural except general.
 
 All the functions in the API are covered. You can find details on them all on the [Campaign Monitor API](http://www.campaignmonitor.com/api) website or but browsing the following files:
 
