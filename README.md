@@ -58,7 +58,7 @@ vendor/csrest_administrators.php
 vendor/csrest_campaigns.php
 vendor/csrest_clients.php
 vendor/csrest_general.php
-vendor/csrest_lists.
+vendor/csrest_lists.php
 vendor/csrest_people.php
 vendor/csrest_segments.php
 vendor/csrest_subscribers.php
