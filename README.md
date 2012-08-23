@@ -39,10 +39,12 @@ CampaignMonitor::LIBRARY(LIBRARY_ID);
 
 ``LIBRARY`` should be replaced with one item from the list below depending on the interaction required. ``LIBRARY_ID`` should be replaced with the API ID for that library. See the example below for help.
 
+* administrators
 * campaigns - requires campaign id
 * clients - requires client id
 * general
 * lists - requires list id
+* people - require client id
 * segments - requires segment id
 * subscribers - requires list id
 * templates - requires template id
@@ -52,10 +54,12 @@ CampaignMonitor::LIBRARY(LIBRARY_ID);
 All the functions in the API are covered. You can find details on them all on the [Campaign Monitor API](http://www.campaignmonitor.com/api) website or by browsing the following files:
 
 ```php
+vendor/csrest_administrators.php
 vendor/csrest_campaigns.php
 vendor/csrest_clients.php
 vendor/csrest_general.php
-vendor/csrest_lists.php
+vendor/csrest_lists.
+vendor/csrest_people.php
 vendor/csrest_segments.php
 vendor/csrest_subscribers.php
 vendor/csrest_templates.php

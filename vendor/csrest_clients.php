@@ -1,14 +1,6 @@
 <?php
 require_once dirname(__FILE__).'/class/base_classes.php';
 
-define('CS_REST_CLIENT_ACCESS_NONE', 0x0);
-define('CS_REST_CLIENT_ACCESS_REPORTS', 0x1);
-define('CS_REST_CLIENT_ACCESS_SUBSCRIBERS', 0x2);
-define('CS_REST_CLIENT_ACCESS_CREATESEND', 0x4);
-define('CS_REST_CLIENT_ACCESS_DESIGNSPAMTEST', 0x8);
-define('CS_REST_CLIENT_ACCESS_IMPORTSUBSCRIBERS', 0x10);
-define('CS_REST_CLIENT_ACCESS_IMPORTURL', 0x20);
-
 /**
  * Class to access a clients resources from the create send API.
  * This class includes functions to create and edit clients,
@@ -133,6 +125,26 @@ class CS_REST_Clients extends CS_REST_Wrapper_Base {
     }
 
     /**
+     * Gets the lists across a client to which a subscriber with a particular
+     * email address belongs.
+     * @param string $email_address Subscriber's email address.
+     * @access public
+     * @return CS_REST_Wrapper_Result A successful response will be an object of the form
+     * array(
+     *     {
+     *         'ListID' => The id of the list
+     *         'ListName' => The name of the list
+     *         'SubscriberState' => The state of the subscriber in the list
+     *         'DateSubscriberAdded' => The date the subscriber was added
+     *     }
+     * )
+     */
+    function get_lists_for_email($email_address) {
+        return $this->get_request($this->_clients_base_route . 
+          'listsforemail.json?email='.urlencode($email_address));
+    }
+
+    /**
      * Gets all list segments the current client has created
      * @access public
      * @return CS_REST_Wrapper_Result A successful response will be an object of the form
@@ -212,22 +224,6 @@ class CS_REST_Clients extends CS_REST_Wrapper_Base {
      *         'Country' => The clients country
      *         'TimeZone' => The clients timezone
      *     }
-     *     'AccessDetails' => 
-     *     {
-     *         'AccessLevel' => The current access level of the client.
-     *             This will be some bitwise combination of
-     *
-     *             CS_REST_CLIENT_ACCESS_REPORTS
-     *             CS_REST_CLIENT_ACCESS_SUBSCRIBERS
-     *             CS_REST_CLIENT_ACCESS_CREATESEND
-     *             CS_REST_CLIENT_ACCESS_DESIGNSPAMTEST
-     *             CS_REST_CLIENT_ACCESS_IMPORTSUBSCRIBERS
-     *             CS_REST_CLIENT_ACCESS_IMPORTURL
-     *
-     *             or
-     *             CS_REST_CLIENT_ACCESS_NONE
-     *         'Username' => The clients current username
-     *     }
      *     'BillingDetails' =>
      *     If on monthly billing
      *     {
@@ -270,8 +266,6 @@ class CS_REST_Clients extends CS_REST_Wrapper_Base {
      *     This should be an array of the form
      *         array(
      *             'CompanyName' => The company name of the client
-     *             'ContactName' => The contact name of the client
-     *             'EmailAddress' => The clients contact email address
      *             'Country' => The clients country
      *             'TimeZone' => The clients timezone
      *         )
@@ -279,6 +273,12 @@ class CS_REST_Clients extends CS_REST_Wrapper_Base {
      * @return CS_REST_Wrapper_Result A successful response will be the ID of the newly created client
      */
     function create($client) {
+      	if(isset($client['ContactName'])) {
+      		trigger_error('[DEPRECATION] Use Person->add to set name on a new person in a client. For now, we will create a default person with the name provided.', E_USER_NOTICE);
+      	}
+      	if(isset($client['EmailAddress'])) {
+      		trigger_error('[DEPRECATION] Use Person->add to set email on a new person in a client. For now, we will create a default person with the email provided.', E_USER_NOTICE);
+      	}
         return $this->post_request($this->_base_route.'clients.json', $client);
     }
 
@@ -288,8 +288,6 @@ class CS_REST_Clients extends CS_REST_Wrapper_Base {
      *     This should be an array of the form
      *         array(
      *             'CompanyName' => The company name of the client
-     *             'ContactName' => The contact name of the client
-     *             'EmailAddress' => The clients contact email address
      *             'Country' => The clients country
      *             'TimeZone' => The clients timezone
      *         )
@@ -297,34 +295,13 @@ class CS_REST_Clients extends CS_REST_Wrapper_Base {
      * @return CS_REST_Wrapper_Result A successful response will be empty
      */
     function set_basics($client_basics) {
+      	if(isset($client['ContactName'])) {
+      		trigger_error('[DEPRECATION] Use person->update to set name on a particular person in a client. For now, we will update the default person with the name provided.', E_USER_NOTICE);
+      	}
+      	if(isset($client['EmailAddress'])) {
+      		trigger_error('[DEPRECATION] Use person->update to set email on a particular person in a client. For now, we will update the default person with the email address provided.', E_USER_NOTICE);
+      	}
         return $this->put_request($this->_clients_base_route.'setbasics.json', $client_basics);
-    }
-
-    /**
-     * Updates the access details of the current client
-     * @param array $client_access Access details of the client.
-     *     This should be an array of the form
-     *         array(
-     *             'AccessLevel' => The current access level of the client.
-     *                 This will be some bitwise combination of
-     *
-     *                 CS_REST_CLIENT_ACCESS_REPORTS
-     *                 CS_REST_CLIENT_ACCESS_SUBSCRIBERS
-     *                 CS_REST_CLIENT_ACCESS_CREATESEND
-     *                 CS_REST_CLIENT_ACCESS_DESIGNSPAMTEST
-     *                 CS_REST_CLIENT_ACCESS_IMPORTSUBSCRIBERS
-     *                 CS_REST_CLIENT_ACCESS_IMPORTURL
-     *
-     *                 or
-     *                 CS_REST_CLIENT_ACCESS_NONE
-     *             'Username' => The clients current username
-     *             'Password' => The new password for the given client
-     *         )
-     * @access public
-     * @return CS_REST_Wrapper_Result A successful response will be empty
-     */
-    function set_access($client_access) {
-        return $this->put_request($this->_clients_base_route.'setaccess.json', $client_access);
     }
 
     /**
@@ -364,5 +341,38 @@ class CS_REST_Clients extends CS_REST_Wrapper_Base {
      */
     function set_monthly_billing($client_billing) {
         return $this->put_request($this->_clients_base_route.'setmonthlybilling.json', $client_billing);
+    }
+    
+    /**
+     * returns the people associated with this client.
+     * @return CS_REST_Wrapper_Result A successful response will be an object of the form 
+     *     array({
+     *     		'EmailAddress' => the email address of the person
+     *     		'Name' => the name of the person
+     *     		'AccessLevel' => the access level of the person
+     *     		'Status' => the status of the person
+     *     })
+     */
+    function get_people() {
+    	return $this->get_request($this->_clients_base_route.'people.json');
+    } 
+    
+    /**
+     * retrieves the email address of the primary contact for this client
+     * @return CS_REST_Wrapper_Result a successful response will be an array in the form:
+     * 		array('EmailAddress'=> email address of primary contact)
+     */
+    function get_primary_contact() {
+    	return $this->get_request($this->_clients_base_route.'primarycontact.json');
+    }
+    
+    /**
+     * assigns the primary contact for this client to the person with the specified email address
+     * @param string $emailAddress the email address of the person designated to be the primary contact
+     * @return CS_REST_Wrapper_Result a successful response will be an array in the form:
+     * 		array('EmailAddress'=> email address of primary contact)
+     */
+    function set_primary_contact($emailAddress) {
+    	return $this->put_request($this->_clients_base_route.'primarycontact.json?email=' . urlencode($emailAddress), '');
     }
 }
